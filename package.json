@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
+    "git-describe": "^4.0.3",
     "gulp": "^4.0.0",
     "gulp-uglify": "^3.0.1",
     "phaser-ce": "^2.11.0"
