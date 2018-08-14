@@ -13,7 +13,7 @@ define("util/damage", ["require", "exports"], function (require, exports) {
     var util;
     (function (util) {
         function damage(attack, defense) {
-            return 0.0;
+            return attack * (1.0 - defense);
         }
         util.damage = damage;
     })(util = exports.util || (exports.util = {}));
