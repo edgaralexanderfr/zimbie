@@ -16,9 +16,7 @@
     "typescript": "^3.0.1",
     "git-describe": "^4.0.3",
     "gulp-typedoc": "^2.2.0",
-    "typedoc": "^0.11.1"
-  },
-  "devDependencies": {
+    "typedoc": "^0.11.1",
     "phaser-ce": "^2.11.0"
   }
 }
