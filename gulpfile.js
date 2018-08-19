@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var typescript = require('gulp-typescript');
 var uglify = require('gulp-uglify');
-var connect = require('gulp-connect');
 var typedoc = require('gulp-typedoc');
 var { gitDescribe } = require('git-describe');
 
@@ -25,7 +24,7 @@ gulp.task('typescript', function() {
   return tsProject.src()
     .pipe(tsProject())
     .js.pipe(gulp.dest('.'));
-})
+});
 
 gulp.task('uglify', function() {
   return gulp.src('app/js/main.js')
@@ -44,13 +43,6 @@ gulp.task('copy', function(done) {
     .pipe(gulp.dest('dist/'));
 
   done();
-})
-
-gulp.task('connect', function() {
-  connect.server({
-    root: 'dist',
-    livereload: true
-  });
 });
 
 gulp.task('typedoc', function(done) {
