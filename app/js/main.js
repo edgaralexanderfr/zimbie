@@ -12,20 +12,33 @@ define("AssetManager", ["require", "exports"], function (require, exports) {
         };
         AssetManager.load = function (game) {
             var assets = game.cache.getJSON("assets");
+            var single = assets.single;
             var multiple = assets.multiple;
             var i;
+            for (i = 0; i < single.length; i++) {
+                var asset = single[i];
+                this.loadFile(game, asset.type, asset.name, asset.uri);
+            }
             for (i = 0; i < multiple.length; i++) {
                 var asset = multiple[i];
                 var count = void 0;
                 for (count = 1; count <= asset.total; count++) {
-                    switch (asset.type) {
-                        case "image":
-                            game.load.image(asset.name + count, asset.uri + count + asset.extension);
-                            break;
-                    }
+                    var name_1 = asset.name + count;
+                    var uri = asset.uri + count + asset.extension;
+                    this.loadFile(game, asset.type, name_1, uri);
                 }
             }
             game.load.start();
+        };
+        AssetManager.loadFile = function (game, type, name, uri) {
+            switch (type) {
+                case "image":
+                    game.load.image(name, uri);
+                    break;
+                case "json":
+                    game.load.json(name, uri);
+                    break;
+            }
         };
         return AssetManager;
     }());

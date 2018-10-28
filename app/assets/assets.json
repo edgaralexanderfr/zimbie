@@ -1,4 +1,11 @@
 {
+  "single": [
+    {
+      "type": "json",
+      "name": "data-game",
+      "uri": "assets/data/game.json"
+    }
+  ],
   "multiple": [
     {
       "type": "image",
