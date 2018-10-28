@@ -1,7 +1,14 @@
 {
   "terrain": {
+    "width": 64,
+    "height": 64,
+    "tileSize": 64,
     "dirt": {
-      "seed": 0.5
+      "minWidth": 3,
+      "minHeight": 3,
+      "maxWidth": 8,
+      "maxHeight": 8,
+      "seed": 0.25
     }
   }
 }
