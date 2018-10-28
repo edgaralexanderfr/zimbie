@@ -1,0 +1,11 @@
+{
+  "multiple": [
+    {
+      "type": "image",
+      "name": "sprite-terrain-tile-",
+      "uri": "assets/sprites/terrain/tile",
+      "total": 8,
+      "extension": ".png"
+    }
+  ]
+}
