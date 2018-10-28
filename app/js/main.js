@@ -1,6 +1,6 @@
 "use strict";
-var GAME_WIDTH = 640;
-var GAME_HEIGHT = 360;
+var GAME_WIDTH = 1350;
+var GAME_HEIGHT = 650;
 var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, "", {
     preload: preload
 });
