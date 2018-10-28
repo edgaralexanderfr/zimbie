@@ -1,0 +1,32 @@
+{
+  // These snippets are used for authoring classes, methods, functions, etc.
+  // We must specify on each individual block comment of previous the time
+  // when it was created and updated and also the author who made it.
+  //
+  // In order to create a new author snippet, simply add a new one below
+  // the "Author Doc Signatures" section with your name and info on it.
+  "Creation Date": {
+    "prefix": "@created",
+    "body": [
+      "**Created:** *${CURRENT_MONTH} ${CURRENT_DATE}th ${CURRENT_YEAR}, ${CURRENT_HOUR}:${CURRENT_MINUTE}*<br />"
+    ],
+    "description": "Creation Date"
+  },
+  "Update Date": {
+    "prefix": "@updated",
+    "body": [
+      "**Updated:** *${CURRENT_MONTH} ${CURRENT_DATE}th ${CURRENT_YEAR}, ${CURRENT_HOUR}:${CURRENT_MINUTE}*"
+    ],
+    "description": "Update Date"
+  },
+
+  // Author Doc Signatures:
+
+  "Edgar Author Doc Signature": {
+    "prefix": "@edgar",
+    "body": [
+      "@author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)"
+    ],
+    "description": "Edgar Author Doc Signature"
+  }
+}
