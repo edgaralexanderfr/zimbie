@@ -33,11 +33,11 @@ gulp.task('uglify', function() {
 });
 
 gulp.task('copy', function(done) {
-  gulp.src('app/lib/phaser.min.js')
-    .pipe(gulp.dest('dist/lib'));
+  gulp.src('app/assets/**/*')
+    .pipe(gulp.dest('dist/assets/'));
 
-  gulp.src('app/lib/require.js')
-    .pipe(gulp.dest('dist/lib'));
+  gulp.src('app/lib/**/*')
+    .pipe(gulp.dest('dist/lib/'));
 
   gulp.src('app/index.html')
     .pipe(gulp.dest('dist/'));
