@@ -73,6 +73,22 @@ define("Terrain", ["require", "exports"], function (require, exports) {
                 }
             }
             var terrainSize = gameData.terrain.width * gameData.terrain.height;
+            var maxGrass1Tiles = Math.floor(terrainSize * gameData.terrain.grass1.seed);
+            var remainingGrass1Tiles = maxGrass1Tiles;
+            do {
+                var x = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
+                var y = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
+                gridData[y][x] = "grass1";
+                remainingGrass1Tiles--;
+            } while (remainingGrass1Tiles > 0);
+            var maxRocks1Tiles = Math.floor(terrainSize * gameData.terrain.rocks1.seed);
+            var remainingRocks1Tiles = maxRocks1Tiles;
+            do {
+                var x = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
+                var y = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
+                gridData[y][x] = "rocks1";
+                remainingRocks1Tiles--;
+            } while (remainingRocks1Tiles > 0);
             var maxDirtTiles = Math.floor(terrainSize * gameData.terrain.dirt.seed);
             var minDirtSize = gameData.terrain.dirt.minWidth * gameData.terrain.dirt.minHeight;
             var remainingDirtTiles = maxDirtTiles;
@@ -83,7 +99,7 @@ define("Terrain", ["require", "exports"], function (require, exports) {
                 var y = this.game.rnd.integerInRange(0, gameData.terrain.height - height);
                 for (i = y; i < y + height; i++) {
                     for (j = x; j < x + width; j++) {
-                        if (gridData[i][j] == "") {
+                        if (gridData[i][j] != "dirt") {
                             gridData[i][j] = "dirt";
                             remainingDirtTiles--;
                         }
@@ -97,26 +113,34 @@ define("Terrain", ["require", "exports"], function (require, exports) {
                 for (j = 0; j < gameData.terrain.width; j++) {
                     var x = j * gameData.terrain.tileSize;
                     var y = i * gameData.terrain.tileSize;
-                    if (gridData[i][j] == "dirt") {
-                        var neighbors = this.getNeighbors(gridData, j, i, "dirt");
-                        if (neighbors[3] == "" && neighbors[1] == "") {
-                            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-5"), x, y);
-                        }
-                        else if (neighbors[5] == "" && neighbors[1] == "") {
-                            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-6"), x, y);
-                        }
-                        else if (neighbors[3] == "" && neighbors[7] == "") {
-                            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-7"), x, y);
-                        }
-                        else if (neighbors[5] == "" && neighbors[7] == "") {
-                            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-8"), x, y);
-                        }
-                        else {
-                            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-4"), x, y);
-                        }
-                    }
-                    else {
-                        data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-1"), x, y);
+                    switch (gridData[i][j]) {
+                        case "dirt":
+                            var neighbors = this.getNeighbors(gridData, j, i, "dirt");
+                            if (neighbors[3] != "dirt" && neighbors[1] != "dirt") {
+                                data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-5"), x, y);
+                            }
+                            else if (neighbors[5] != "dirt" && neighbors[1] != "dirt") {
+                                data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-6"), x, y);
+                            }
+                            else if (neighbors[3] != "dirt" && neighbors[7] != "dirt") {
+                                data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-7"), x, y);
+                            }
+                            else if (neighbors[5] != "dirt" && neighbors[7] != "dirt") {
+                                data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-8"), x, y);
+                            }
+                            else {
+                                data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-4"), x, y);
+                            }
+                            break;
+                        case "grass1":
+                            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-2"), x, y);
+                            break;
+                        case "rocks1":
+                            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-3"), x, y);
+                            break;
+                        default:
+                            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-1"), x, y);
+                            break;
                     }
                 }
             }
@@ -155,6 +179,7 @@ define("main", ["require", "exports", "AssetManager", "Terrain"], function (requ
     Terrain_1 = __importDefault(Terrain_1);
     var GAME_WIDTH = 1350;
     var GAME_HEIGHT = 650;
+    var CAMERA_SPEED = 8;
     var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, "", {
         preload: preload,
         create: create,
@@ -182,16 +207,16 @@ define("main", ["require", "exports", "AssetManager", "Terrain"], function (requ
     }
     function update() {
         if (upKey.isDown) {
-            game.camera.y -= 64;
+            game.camera.y -= CAMERA_SPEED;
         }
         if (downKey.isDown) {
-            game.camera.y += 64;
+            game.camera.y += CAMERA_SPEED;
         }
         if (leftKey.isDown) {
-            game.camera.x -= 64;
+            game.camera.x -= CAMERA_SPEED;
         }
         if (rightKey.isDown) {
-            game.camera.x += 64;
+            game.camera.x += CAMERA_SPEED;
         }
     }
 });

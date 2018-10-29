@@ -5,6 +5,7 @@ import Terrain from "./Terrain";
 
 const GAME_WIDTH: number = 1350;
 const GAME_HEIGHT: number = 650;
+const CAMERA_SPEED: number = 8;
 
 let game: Phaser.Game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, "", {
   preload: preload,
@@ -40,18 +41,18 @@ function init(): void {
 
 function update(): void {
   if (upKey.isDown) {
-    game.camera.y -= 64;
+    game.camera.y -= CAMERA_SPEED;
   }
 
   if (downKey.isDown) {
-    game.camera.y += 64;
+    game.camera.y += CAMERA_SPEED;
   }
 
   if (leftKey.isDown) {
-    game.camera.x -= 64;
+    game.camera.x -= CAMERA_SPEED;
   }
 
   if (rightKey.isDown) {
-    game.camera.x += 64;
+    game.camera.x += CAMERA_SPEED;
   }
 }

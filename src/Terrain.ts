@@ -46,8 +46,35 @@ export default class Terrain {
       }
     }
 
-    // We assign the grid blocks for dirt:
     let terrainSize: number = gameData.terrain.width * gameData.terrain.height;
+
+    // We assign the grid blocks for grass1:
+    let maxGrass1Tiles: number = Math.floor(terrainSize * gameData.terrain.grass1.seed);
+    let remainingGrass1Tiles = maxGrass1Tiles;
+
+    do {
+      let x: number = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
+      let y: number = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
+
+      gridData[y][x] = "grass1";
+
+      remainingGrass1Tiles--;
+    } while (remainingGrass1Tiles > 0);
+
+    // We assign the grid blocks for rocks1:
+    let maxRocks1Tiles: number = Math.floor(terrainSize * gameData.terrain.rocks1.seed);
+    let remainingRocks1Tiles = maxRocks1Tiles;
+
+    do {
+      let x: number = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
+      let y: number = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
+
+      gridData[y][x] = "rocks1";
+
+      remainingRocks1Tiles--;
+    } while (remainingRocks1Tiles > 0);
+
+    // We assign the grid blocks for dirt:
     // FIXME: When dirt.seed is 1.0 the game freezes and crashes and when it's 0.0
     //        it still creates dirt...
     let maxDirtTiles: number = Math.floor(terrainSize * gameData.terrain.dirt.seed);
@@ -62,7 +89,7 @@ export default class Terrain {
 
       for (i = y; i < y + height; i++) {
         for (j = x; j < x + width; j++) {
-          if (gridData[i][j] == "") {
+          if (gridData[i][j] != "dirt") {
             gridData[i][j] = "dirt";
             remainingDirtTiles--;
           }
@@ -84,27 +111,37 @@ export default class Terrain {
         let x: number = j * gameData.terrain.tileSize;
         let y: number = i * gameData.terrain.tileSize;
 
-        if (gridData[i][j] == "dirt") {
-          let neighbors: Array<string> = this.getNeighbors(gridData, j, i, "dirt");
+        switch (gridData[i][j]) {
+          case "dirt":
+            let neighbors: Array<string> = this.getNeighbors(gridData, j, i, "dirt");
 
-          // We check if it's a rounded dirty corner or a regular dirty
-          // zone:
-          if (neighbors[3] == "" && neighbors[1] == "") {
-            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-5"), x, y);
-          } else
-          if (neighbors[5] == "" && neighbors[1] == "") {
-            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-6"), x, y);
-          } else
-          if (neighbors[3] == "" && neighbors[7] == "") {
-            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-7"), x, y);
-          } else
-          if (neighbors[5] == "" && neighbors[7] == "") {
-            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-8"), x, y);
-          } else {
-            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-4"), x, y);
-          }
-        } else {
-          data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-1"), x, y);
+            // We check if it's a rounded dirty corner or a regular dirty
+            // zone:
+            if (neighbors[3] != "dirt" && neighbors[1] != "dirt") {
+              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-5"), x, y);
+            } else
+            if (neighbors[5] != "dirt" && neighbors[1] != "dirt") {
+              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-6"), x, y);
+            } else
+            if (neighbors[3] != "dirt" && neighbors[7] != "dirt") {
+              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-7"), x, y);
+            } else
+            if (neighbors[5] != "dirt" && neighbors[7] != "dirt") {
+              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-8"), x, y);
+            } else {
+              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-4"), x, y);
+            }
+
+            break;
+          case "grass1":
+            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-2"), x, y);
+            break;
+          case "rocks1":
+            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-3"), x, y);
+            break;
+          default:
+            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-1"), x, y);
+            break;
         }
       }
     }

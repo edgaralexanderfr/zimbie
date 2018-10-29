@@ -3,6 +3,12 @@
     "width": 64,
     "height": 64,
     "tileSize": 64,
+    "grass1": {
+      "seed": 0.125
+    },
+    "rocks1": {
+      "seed": 0.025
+    },
     "dirt": {
       "minWidth": 3,
       "minHeight": 3,
