@@ -72,6 +72,10 @@ gulp.task('browser-sync', function (done) {
     done();
   }));
 
+  gulp.watch('./app/assets/**/*', gulp.series('copy', function (done) {
+    done();
+  }));
+
   gulp.watch('./dist/**/*', gulp.series('browser-sync-reload', function (done) {
     done();
   }));
