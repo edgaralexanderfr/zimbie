@@ -73,22 +73,18 @@ define("Terrain", ["require", "exports"], function (require, exports) {
                 }
             }
             var terrainSize = gameData.terrain.width * gameData.terrain.height;
-            var maxGrass1Tiles = Math.floor(terrainSize * gameData.terrain.grass1.seed);
-            var remainingGrass1Tiles = maxGrass1Tiles;
-            do {
-                var x = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
-                var y = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
-                gridData[y][x] = "grass1";
-                remainingGrass1Tiles--;
-            } while (remainingGrass1Tiles > 0);
-            var maxRocks1Tiles = Math.floor(terrainSize * gameData.terrain.rocks1.seed);
-            var remainingRocks1Tiles = maxRocks1Tiles;
-            do {
-                var x = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
-                var y = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
-                gridData[y][x] = "rocks1";
-                remainingRocks1Tiles--;
-            } while (remainingRocks1Tiles > 0);
+            var population = gameData.terrain.population;
+            for (var _i = 0, population_1 = population; _i < population_1.length; _i++) {
+                var populatedItem = population_1[_i];
+                var maxTiles = Math.floor(terrainSize * populatedItem.seed);
+                var remainingTiles = maxTiles;
+                do {
+                    var x = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
+                    var y = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
+                    gridData[y][x] = populatedItem.name;
+                    remainingTiles--;
+                } while (remainingTiles > 0);
+            }
             var maxDirtTiles = Math.floor(terrainSize * gameData.terrain.dirt.seed);
             var minDirtSize = gameData.terrain.dirt.minWidth * gameData.terrain.dirt.minHeight;
             var remainingDirtTiles = maxDirtTiles;
