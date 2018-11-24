@@ -3,14 +3,17 @@
     "width": 64,
     "height": 64,
     "tileSize": 64,
+    "asset": "sprite-terrain-tile-1",
     "population": [
       {
         "name": "grass1",
-        "seed": 0.125
+        "seed": 0.125,
+        "asset": "sprite-terrain-tile-2"
       },
       {
         "name": "rocks1",
-        "seed": 0.025
+        "seed": 0.025,
+        "asset": "sprite-terrain-tile-3"
       }
     ],
     "dirt": {
@@ -18,7 +21,14 @@
       "minHeight": 3,
       "maxWidth": 8,
       "maxHeight": 8,
-      "seed": 0.25
+      "seed": 0.25,
+      "assets": [
+        "sprite-terrain-tile-4",
+        "sprite-terrain-tile-5",
+        "sprite-terrain-tile-6",
+        "sprite-terrain-tile-7",
+        "sprite-terrain-tile-8"
+      ]
     }
   }
 }
