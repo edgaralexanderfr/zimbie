@@ -27,7 +27,7 @@ export default class Terrain {
    * *assets/data/game.json* configuration file.
    *
    * **Created:** *10 28th 2018, 11:56*<br />
-   * **Updated:** *11 24th 2018, 15:43*
+   * **Updated:** *11 24th 2018, 16:16*
    *
    * @author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
    */
@@ -108,29 +108,29 @@ export default class Terrain {
             // We check if it's a rounded dirty corner or a regular dirty
             // zone:
             if (neighbors[3] != "dirt" && neighbors[1] != "dirt") {
-              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-5"), x, y);
+              data.context.drawImage(this.game.cache.getImage(gameData.terrain.dirt.assets[1]), x, y);
             } else
             if (neighbors[5] != "dirt" && neighbors[1] != "dirt") {
-              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-6"), x, y);
+              data.context.drawImage(this.game.cache.getImage(gameData.terrain.dirt.assets[2]), x, y);
             } else
             if (neighbors[3] != "dirt" && neighbors[7] != "dirt") {
-              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-7"), x, y);
+              data.context.drawImage(this.game.cache.getImage(gameData.terrain.dirt.assets[3]), x, y);
             } else
             if (neighbors[5] != "dirt" && neighbors[7] != "dirt") {
-              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-8"), x, y);
+              data.context.drawImage(this.game.cache.getImage(gameData.terrain.dirt.assets[4]), x, y);
             } else {
-              data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-4"), x, y);
+              data.context.drawImage(this.game.cache.getImage(gameData.terrain.dirt.assets[0]), x, y);
             }
 
             break;
           case "grass1":
-            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-2"), x, y);
+            data.context.drawImage(this.game.cache.getImage(gameData.terrain.population[0].asset), x, y);
             break;
           case "rocks1":
-            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-3"), x, y);
+            data.context.drawImage(this.game.cache.getImage(gameData.terrain.population[1].asset), x, y);
             break;
           default:
-            data.context.drawImage(this.game.cache.getImage("sprite-terrain-tile-1"), x, y);
+            data.context.drawImage(this.game.cache.getImage(gameData.terrain.asset), x, y);
             break;
         }
       }
