@@ -27,7 +27,7 @@ export default class Terrain {
    * *assets/data/game.json* configuration file.
    *
    * **Created:** *10 28th 2018, 11:56*<br />
-   * **Updated:** *10 28th 2018, 11:56*
+   * **Updated:** *11 24th 2018, 15:43*
    *
    * @author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
    */
@@ -46,33 +46,23 @@ export default class Terrain {
       }
     }
 
+    // We populate terrain items
     let terrainSize: number = gameData.terrain.width * gameData.terrain.height;
+    let population: any = gameData.terrain.population;
 
-    // We assign the grid blocks for grass1:
-    let maxGrass1Tiles: number = Math.floor(terrainSize * gameData.terrain.grass1.seed);
-    let remainingGrass1Tiles = maxGrass1Tiles;
+    for (let populatedItem of population) {
+      let maxTiles: number = Math.floor(terrainSize * populatedItem.seed);
+      let remainingTiles = maxTiles;
 
-    do {
-      let x: number = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
-      let y: number = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
+      do {
+        let x: number = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
+        let y: number = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
 
-      gridData[y][x] = "grass1";
+        gridData[y][x] = populatedItem.name;
 
-      remainingGrass1Tiles--;
-    } while (remainingGrass1Tiles > 0);
-
-    // We assign the grid blocks for rocks1:
-    let maxRocks1Tiles: number = Math.floor(terrainSize * gameData.terrain.rocks1.seed);
-    let remainingRocks1Tiles = maxRocks1Tiles;
-
-    do {
-      let x: number = this.game.rnd.integerInRange(0, gameData.terrain.width - 1);
-      let y: number = this.game.rnd.integerInRange(0, gameData.terrain.height - 1);
-
-      gridData[y][x] = "rocks1";
-
-      remainingRocks1Tiles--;
-    } while (remainingRocks1Tiles > 0);
+        remainingTiles--;
+      } while (remainingTiles > 0);
+    }
 
     // We assign the grid blocks for dirt:
     // FIXME: When dirt.seed is 1.0 the game freezes and crashes and when it's 0.0
