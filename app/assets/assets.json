@@ -11,7 +11,7 @@
       "type": "image",
       "name": "sprite-terrain-tile-",
       "uri": "assets/sprites/terrain/tile",
-      "total": 8,
+      "total": 10,
       "extension": ".png"
     }
   ]

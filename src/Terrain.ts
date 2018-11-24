@@ -27,7 +27,7 @@ export default class Terrain {
    * *assets/data/game.json* configuration file.
    *
    * **Created:** *10 28th 2018, 11:56*<br />
-   * **Updated:** *11 24th 2018, 16:16*
+   * **Updated:** *11 24th 2018, 17:41*
    *
    * @author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
    */
@@ -128,6 +128,12 @@ export default class Terrain {
             break;
           case "rocks1":
             data.context.drawImage(this.game.cache.getImage(gameData.terrain.population[1].asset), x, y);
+            break;
+          case "grass2":
+            data.context.drawImage(this.game.cache.getImage(gameData.terrain.population[2].asset), x, y);
+            break;
+          case "sticks1":
+            data.context.drawImage(this.game.cache.getImage(gameData.terrain.population[3].asset), x, y);
             break;
           default:
             data.context.drawImage(this.game.cache.getImage(gameData.terrain.asset), x, y);
