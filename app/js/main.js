@@ -134,6 +134,12 @@ define("Terrain", ["require", "exports"], function (require, exports) {
                         case "rocks1":
                             data.context.drawImage(this.game.cache.getImage(gameData.terrain.population[1].asset), x, y);
                             break;
+                        case "grass2":
+                            data.context.drawImage(this.game.cache.getImage(gameData.terrain.population[2].asset), x, y);
+                            break;
+                        case "sticks1":
+                            data.context.drawImage(this.game.cache.getImage(gameData.terrain.population[3].asset), x, y);
+                            break;
                         default:
                             data.context.drawImage(this.game.cache.getImage(gameData.terrain.asset), x, y);
                             break;

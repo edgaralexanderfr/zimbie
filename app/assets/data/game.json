@@ -7,13 +7,23 @@
     "population": [
       {
         "name": "grass1",
-        "seed": 0.125,
+        "seed": 0.063,
         "asset": "sprite-terrain-tile-2"
       },
       {
         "name": "rocks1",
-        "seed": 0.025,
+        "seed": 0.014,
         "asset": "sprite-terrain-tile-3"
+      },
+      {
+        "name": "grass2",
+        "seed": 0.063,
+        "asset": "sprite-terrain-tile-9"
+      },
+      {
+        "name": "sticks1",
+        "seed": 0.010,
+        "asset": "sprite-terrain-tile-10"
       }
     ],
     "dirt": {
