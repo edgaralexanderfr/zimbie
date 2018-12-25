@@ -11,7 +11,8 @@ import shutil
 
 ################################################################################################
 # SETTINGS: ####################################################################################
-path = '//../../tmp/'
+path = '../../tmp/'
+is_relative_path = True
 total_frames = 4
 resolution_x = 64
 resolution_y = 64
@@ -50,7 +51,6 @@ bpy.data.scenes['Scene'].render.resolution_x = resolution_x
 bpy.data.scenes['Scene'].render.resolution_y = resolution_y
 
 try :
-  # FIXME: rmtree is always throwing a FileNotFoundError exception...
   shutil.rmtree(path)
 except :
   pass
@@ -93,7 +93,13 @@ for a in range(0, action_count) :
 
         for i, angle in enumerate(angles_values) :
           armature.rotation_euler = (0, 0, (angle * math.pi) / 180)
-          bpy.data.scenes['Scene'].render.filepath = path + 'character/' + ob.name.lower() + '/' + armature.animation_data.action.name.lower() + '/' + angles_names[i] + '/'
+          export_path = ''
+
+          if (is_relative_path) :
+            export_path += '//'
+
+          export_path += path + 'character/' + ob.name.lower() + '/' + armature.animation_data.action.name.lower() + '/' + angles_names[i] + '/'
+          bpy.data.scenes['Scene'].render.filepath = export_path
 
           try :
             os.makedirs(bpy.data.scenes['Scene'].render.filepath)
@@ -114,11 +120,11 @@ for a in range(0, action_count) :
   for l in range(0, layer_count) :
     bpy.data.scenes['Scene'].render.layers['RenderLayer'].layers[l] = True
 
-try :
-  # FIXME: rmtree is always throwing a FileNotFoundError exception...
-  shutil.rmtree(path)
-except :
-  pass
+# TODO: Uncomment when all spritesheets are finished and done...
+#try :
+#  shutil.rmtree(path)
+#except :
+#  pass
 
 print('All sprites exported correctly.')
 
