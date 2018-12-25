@@ -8,8 +8,13 @@ Hide between the density of a *"lonely"*, *"desert"* and *"safe"* forest, create
 
 ## Development
 
+### Getting started:
+
 1. Clone the repository.
 2. Run `npm start`
-3. Install Python's PIP [https://pip.pypa.io/en/stable/installing/](https://pip.pypa.io/en/stable/installing/) **NOTE:** if you have **Blender** installed, you can make use of the Python installation that comes along with it and use it to install PIP and all dependencies, this has some pros and cons, like the reduction of possible errors due to the use of different Python versions, but if you install PIP and your dependencies within Blender's installation folder, you are exposed to lose your dependencies when you upgrade or install a newer version of Blender.
-4. Install Pillow via PIP `pip install Pillow`
-5. Open *.vscode/typescript.code-snippets* and add your developer info there.
+3. Open *.vscode/typescript.code-snippets* and add your developer info there.
+
+### Running Blender's Python script:
+
+1. Install Python's PIP [https://pip.pypa.io/en/stable/installing/](https://pip.pypa.io/en/stable/installing/) **NOTE:** if you have **Blender** installed, you can make use of the Python installation that comes along with it and use it to install PIP and all dependencies, this has some pros and cons, like the reduction of possible errors due to the use of different Python versions, but if you install PIP and your dependencies within Blender's installation folder, you are exposed to lose your dependencies when you upgrade or install a newer version of Blender.
+2. Install Pillow via PIP `pip install Pillow`

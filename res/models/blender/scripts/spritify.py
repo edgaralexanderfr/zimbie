@@ -1,3 +1,9 @@
+# Author: Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
+# Created: 08 20th 2018, 22:18
+# Updated: 12 25th 2018, 16:42
+# NOTE: In order to run this script you must install the Python's **Pillow** library via PIP, for
+#       more information please read the *README.md* file of the project.
+
 import os
 import math
 import bpy
