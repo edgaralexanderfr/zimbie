@@ -1,6 +1,6 @@
 # Author: Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
 # Created: 08 20th 2018, 22:18
-# Updated: 12 25th 2018, 22:22
+# Updated: 12 26th 2018, 17:32
 # NOTE: In order to run this script you must install the Python's **Pillow** library via PIP, for
 #       more information please read the *README.md* file of the project.
 
@@ -23,7 +23,8 @@ angles_names = ['down', 'down-right', 'right', 'up-right', 'up', 'up-left', 'lef
 angles_values = [0, 45, 90, 135, 180, 225, 270, 315]
 cls_on_run = True
 layer_count = 3
-ignored_actions = []
+actions = []
+meshes = []
 ################################################################################################
 
 # Save current scene state:
@@ -64,7 +65,7 @@ action_count = len(bpy.data.actions)
 # Iterate over each animation:
 for a in range(0, action_count) :
   # We check if it's an ignored action, if so we jump to the next one:
-  if (bpy.data.actions[a].name in ignored_actions) :
+  if (len(actions) > 0 and bpy.data.actions[a].name not in actions) :
     continue
 
   armature.animation_data.action = bpy.data.actions[a]
@@ -91,7 +92,7 @@ for a in range(0, action_count) :
 
     # Iterate over each object within current layer independently:
     for ob in bpy.data.objects :
-      if (ob.type == 'MESH' and ob.layers[l]) :
+      if (ob.type == 'MESH' and ob.layers[l] and (len(meshes) < 1 or ob.name in meshes)) :
         ob.hide_render = False
 
         for i, angle in enumerate(angles_values) :
@@ -125,13 +126,18 @@ for a in range(0, action_count) :
 
 # Generate every spritesheet:
 
+total_actions_to_export = len(actions)
+
+if (total_actions_to_export < 1) :
+  total_actions_to_export = action_count
+
 sheet_width = resolution_x * total_frames
-sheet_height = resolution_y * len(angles_names) * (action_count - len(ignored_actions))
+sheet_height = resolution_y * len(angles_names) * total_actions_to_export
 
 print('Generating spritesheets...')
 
 for ob in bpy.data.objects :
-  if (ob.type != 'MESH') :
+  if (ob.type != 'MESH' or (len(meshes) > 0 and ob.name not in meshes)) :
     continue
 
   sheet = Image.new('RGBA', (sheet_width, sheet_height), color = (255, 255, 255, 0))
@@ -139,7 +145,7 @@ for ob in bpy.data.objects :
 
   for a in range(0, action_count) :
     # We check if it's an ignored action, if so we jump to the next one:
-    if (bpy.data.actions[a].name in ignored_actions) :
+    if (len(actions) > 0 and bpy.data.actions[a].name not in actions) :
       continue
 
     for angle_name in angles_names :
