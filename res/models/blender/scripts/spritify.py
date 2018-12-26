@@ -1,6 +1,6 @@
 # Author: Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
 # Created: 08 20th 2018, 22:18
-# Updated: 12 25th 2018, 16:42
+# Updated: 12 25th 2018, 22:22
 # NOTE: In order to run this script you must install the Python's **Pillow** library via PIP, for
 #       more information please read the *README.md* file of the project.
 
@@ -8,11 +8,14 @@ import os
 import math
 import bpy
 import shutil
+from PIL import Image
 
 ################################################################################################
 # SETTINGS: ####################################################################################
 path = '../../tmp/'
 is_relative_path = True
+output_path = '../../../../../app/assets/sprites/character/'
+output_extension = '.png'
 total_frames = 4
 resolution_x = 64
 resolution_y = 64
@@ -120,11 +123,45 @@ for a in range(0, action_count) :
   for l in range(0, layer_count) :
     bpy.data.scenes['Scene'].render.layers['RenderLayer'].layers[l] = True
 
-# TODO: Uncomment when all spritesheets are finished and done...
-#try :
-#  shutil.rmtree(path)
-#except :
-#  pass
+# Generate every spritesheet:
+
+sheet_width = resolution_x * total_frames
+sheet_height = resolution_y * len(angles_names) * (action_count - len(ignored_actions))
+
+print('Generating spritesheets...')
+
+for ob in bpy.data.objects :
+  if (ob.type != 'MESH') :
+    continue
+
+  sheet = Image.new('RGBA', (sheet_width, sheet_height), color = (255, 255, 255, 0))
+  y = 0
+
+  for a in range(0, action_count) :
+    # We check if it's an ignored action, if so we jump to the next one:
+    if (bpy.data.actions[a].name in ignored_actions) :
+      continue
+
+    for angle_name in angles_names :
+      images_path = path + 'character/' + ob.name.lower() + '/' + bpy.data.actions[a].name.lower() + '/' + angle_name + '/'
+      images_files = os.listdir(images_path)
+      x = 0
+
+      for image_file in images_files :
+        image = Image.open(images_path + image_file)
+        sheet.paste(image, (x, y))
+        image.close()
+        x += resolution_x
+
+      y += resolution_y
+
+  sheet.save(output_path + ob.name.lower() + output_extension)
+  sheet.close()
+
+try :
+  shutil.rmtree(path)
+except :
+  pass
 
 print('All sprites exported correctly.')
 
