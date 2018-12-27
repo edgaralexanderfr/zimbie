@@ -1,6 +1,6 @@
 # Author: Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
 # Created: 08 20th 2018, 22:18
-# Updated: 12 26th 2018, 17:32
+# Updated: 12 27th 2018, 16:05
 # NOTE: In order to run this script you must install the Python's **Pillow** library via PIP, for
 #       more information please read the *README.md* file of the project.
 
@@ -25,6 +25,9 @@ cls_on_run = True
 layer_count = 3
 actions = []
 meshes = []
+merge = {
+  "body": ["body", "head"]
+}
 ################################################################################################
 
 # Save current scene state:
@@ -54,6 +57,7 @@ initial_armature_rotation_z = armature.rotation_euler.z
 bpy.data.scenes['Scene'].render.resolution_x = resolution_x
 bpy.data.scenes['Scene'].render.resolution_y = resolution_y
 
+# Delete project's tmp folder used for the script:
 try :
   shutil.rmtree(path)
 except :
@@ -164,6 +168,39 @@ for ob in bpy.data.objects :
   sheet.save(output_path + ob.name.lower() + output_extension)
   sheet.close()
 
+# Merge configured spritesheets:
+
+print('Merging spritesheets...')
+
+# Preload all spritesheets to merge:
+spritesheets = {}
+
+for merge_name in merge :
+  for spritesheet_to_merge in merge[merge_name] :
+    if (spritesheet_to_merge not in spritesheets) :
+      spritesheets[spritesheet_to_merge] = Image.open(output_path + spritesheet_to_merge + output_extension)
+
+# Merge every listed spritesheet:
+for merge_name in merge :
+  merged_spritesheet = Image.new('RGBA', (sheet_width, sheet_height), color = (255, 255, 255, 0))
+
+  for spritesheet_to_merge in merge[merge_name] :
+    old_merged_spritesheet = merged_spritesheet
+    merged_spritesheet = Image.alpha_composite(merged_spritesheet, spritesheets[spritesheet_to_merge])
+    old_merged_spritesheet.close()
+
+  merged_spritesheet.save(output_path + merge_name + output_extension)
+  merged_spritesheet.close()
+
+# Close all pointers and delete files used for merging except the
+# results that use the same name:
+for spritesheet_to_merge in spritesheets :
+  spritesheets[spritesheet_to_merge].close()
+
+  if (spritesheet_to_merge not in merge) :
+    os.remove(output_path + spritesheet_to_merge + output_extension)
+
+# Delete project's tmp folder used for the script:
 try :
   shutil.rmtree(path)
 except :
