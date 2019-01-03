@@ -1,6 +1,6 @@
 # Author: Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
 # Created: 08 20th 2018, 22:18
-# Updated: 12 27th 2018, 16:05
+# Updated: 01 03d 2019, 17:44
 # NOTE: In order to run this script you must install the Python's **Pillow** library via PIP, for
 #       more information please read the *README.md* file of the project.
 
@@ -23,6 +23,7 @@ angles_names = ['down', 'down-right', 'right', 'up-right', 'up', 'up-left', 'lef
 angles_values = [0, 45, 90, 135, 180, 225, 270, 315]
 cls_on_run = True
 layer_count = 3
+pixelation = 0.5
 actions = []
 meshes = []
 merge = {
@@ -137,6 +138,7 @@ if (total_actions_to_export < 1) :
 
 sheet_width = resolution_x * total_frames
 sheet_height = resolution_y * len(angles_names) * total_actions_to_export
+pixelation_scale = 1.0 - pixelation
 
 print('Generating spritesheets...')
 
@@ -164,6 +166,15 @@ for ob in bpy.data.objects :
         x += resolution_x
 
       y += resolution_y
+
+  if (pixelation > 0.0) :
+    sheet_size = sheet.size
+    old_sheet = sheet
+    sheet = old_sheet.resize((round(sheet_width * pixelation_scale), round(sheet_height * pixelation_scale)), resample=Image.BILINEAR)
+    old_sheet.close()
+    old_sheet = sheet
+    sheet = old_sheet.resize(sheet_size, Image.NEAREST)
+    old_sheet.close()
 
   sheet.save(output_path + ob.name.lower() + output_extension)
   sheet.close()
