@@ -40,5 +40,54 @@
         "sprite-terrain-tile-8"
       ]
     }
+  },
+  "character": {
+    "sprites": {
+      "totalFrames": 4,
+      "directions": ["Down", "DownRight", "Right", "UpRight", "Up", "UpLeft", "Left", "DownLeft"],
+      "animations": [
+        {
+          "name": "idle",
+          "frameRate": 1,
+          "loop": true
+        },
+        {
+          "name": "rest",
+          "frameRate": 1,
+          "loop": true
+        },
+        {
+          "name": "walk",
+          "frameRate": 3,
+          "loop": true
+        }
+      ]
+    },
+    "clothing": [
+      {
+        "name": "eyes",
+        "single": true
+      },
+      {
+        "name": "pants",
+        "total": 1
+      },
+      {
+        "name": "shoes",
+        "total": 1
+      },
+      {
+        "name": "shirt",
+        "total": 1
+      },
+      {
+        "name": "jacket",
+        "total": 1
+      },
+      {
+        "name": "hair",
+        "total": 1
+      }
+    ]
   }
 }

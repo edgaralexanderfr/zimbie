@@ -1,9 +1,23 @@
 {
+  "spritesheets": {
+    "spriteWidth": 64,
+    "spriteHeight": 64
+  },
   "single": [
     {
       "type": "json",
       "name": "data-game",
       "uri": "assets/data/game.json"
+    },
+    {
+      "type": "spritesheet",
+      "name": "sprite-character-body",
+      "uri": "assets/sprites/character/body.png"
+    },
+    {
+      "type": "spritesheet",
+      "name": "sprite-character-eyes",
+      "uri": "assets/sprites/character/eyes.png"
     }
   ],
   "multiple": [
@@ -12,6 +26,41 @@
       "name": "sprite-terrain-tile-",
       "uri": "assets/sprites/terrain/tile",
       "total": 10,
+      "extension": ".png"
+    },
+    {
+      "type": "spritesheet",
+      "name": "sprite-character-hair",
+      "uri": "assets/sprites/character/hair",
+      "total": 1,
+      "extension": ".png"
+    },
+    {
+      "type": "spritesheet",
+      "name": "sprite-character-jacket",
+      "uri": "assets/sprites/character/jacket",
+      "total": 1,
+      "extension": ".png"
+    },
+    {
+      "type": "spritesheet",
+      "name": "sprite-character-pants",
+      "uri": "assets/sprites/character/pants",
+      "total": 1,
+      "extension": ".png"
+    },
+    {
+      "type": "spritesheet",
+      "name": "sprite-character-shirt",
+      "uri": "assets/sprites/character/shirt",
+      "total": 1,
+      "extension": ".png"
+    },
+    {
+      "type": "spritesheet",
+      "name": "sprite-character-shoes",
+      "uri": "assets/sprites/character/shoes",
+      "total": 1,
       "extension": ".png"
     }
   ]
