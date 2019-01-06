@@ -5,11 +5,9 @@ import Terrain from "./Terrain";
 import Character from "./Character";
 import { Key } from "phaser-ce";
 
-const GAME_WIDTH: number = 1350;
-const GAME_HEIGHT: number = 650;
 const CAMERA_SPEED: number = 4;
 
-let game: Phaser.Game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, "", {
+let game: Phaser.Game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO, "", {
   preload: preload,
   create: create,
   update: update
@@ -29,8 +27,6 @@ let fiveKey: Phaser.Key;
 let character: Character;
 
 function preload(): void {
-  document.body.style.backgroundColor = "black";
-
   AssetManager.loadMap(game);
 }
 
@@ -54,7 +50,7 @@ function init(): void {
   let terrain: Terrain = new Terrain(game);
   terrain.generate();
 
-  character = new Character(game, 675, 325);
+  character = new Character(game, 32, 32);
   character.setClothing("hair", 1);
   character.setClothing("jacket", 1);
   character.setClothing("shirt", 1);
@@ -156,3 +152,9 @@ function update(): void {
     return;
   }
 }
+
+function resizeGame(e: Event): void {
+  game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+}
+
+window.addEventListener('resize', resizeGame, false);

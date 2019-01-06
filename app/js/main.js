@@ -355,10 +355,8 @@ define("main", ["require", "exports", "AssetManager", "Terrain", "Character"], f
     AssetManager_1 = __importDefault(AssetManager_1);
     Terrain_1 = __importDefault(Terrain_1);
     Character_1 = __importDefault(Character_1);
-    var GAME_WIDTH = 1350;
-    var GAME_HEIGHT = 650;
     var CAMERA_SPEED = 4;
-    var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, "", {
+    var game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO, "", {
         preload: preload,
         create: create,
         update: update
@@ -375,7 +373,6 @@ define("main", ["require", "exports", "AssetManager", "Terrain", "Character"], f
     var fiveKey;
     var character;
     function preload() {
-        document.body.style.backgroundColor = "black";
         AssetManager_1.default.loadMap(game);
     }
     function create() {
@@ -395,7 +392,7 @@ define("main", ["require", "exports", "AssetManager", "Terrain", "Character"], f
     function init() {
         var terrain = new Terrain_1.default(game);
         terrain.generate();
-        character = new Character_1.default(game, 675, 325);
+        character = new Character_1.default(game, 32, 32);
         character.setClothing("hair", 1);
         character.setClothing("jacket", 1);
         character.setClothing("shirt", 1);
@@ -469,6 +466,10 @@ define("main", ["require", "exports", "AssetManager", "Terrain", "Character"], f
             return;
         }
     }
+    function resizeGame(e) {
+        game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+    }
+    window.addEventListener('resize', resizeGame, false);
 });
 define("util/damage", ["require", "exports"], function (require, exports) {
     "use strict";
