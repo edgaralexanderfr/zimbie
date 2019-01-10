@@ -18,6 +18,11 @@
       "type": "spritesheet",
       "name": "sprite-character-eyes",
       "uri": "assets/sprites/character/eyes.png"
+    },
+    {
+      "type": "spritesheet",
+      "name": "sprite-shadow",
+      "uri": "assets/sprites/shadow.png"
     }
   ],
   "multiple": [
