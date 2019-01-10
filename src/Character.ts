@@ -30,12 +30,15 @@ interface CharacterSpriteArrayI {
  * Keeps a character's information as its clothes, its clothes colours, customisation, etc.
  *
  * **Created:** *01 04th 2019, 22:20*<br />
- * **Updated:** *01 04th 2019, 22:20*
+ * **Updated:** *01 10th 2019, 15:22*
  *
  * @author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
  */
 export default class Character {
   private _game: Phaser.Game;
+  private _shadowsGroup: Phaser.Group;
+  private _charactersGroup: Phaser.Group;
+  private _shadow: Phaser.Sprite;
   private _body: Phaser.Sprite;
   private _sprites: any = {};
   private _lastAnimationPlayed: string = "";
@@ -48,6 +51,18 @@ export default class Character {
     this._game = game;
   }
 
+  get shadowsGroup(): Phaser.Group {
+    return this._shadowsGroup;
+  }
+
+  get charactersGroup(): Phaser.Group {
+    return this._charactersGroup;
+  }
+
+  get shadow(): Phaser.Sprite {
+    return this._shadow;
+  }
+
   get body(): Phaser.Sprite {
     return this._body;
   }
@@ -56,17 +71,22 @@ export default class Character {
    * Constructs a new character instance and calls the **this#create(number, number)** method.
    *
    * **Created:** *01 05th 2019, 00:10*<br />
-   * **Updated:** *01 05th 2019, 00:10*
+   * **Updated:** *01 10th 2019, 15:22*
    *
-   * @param game Reference to the **Phaser.Game**
-   * @param x    Character's X start coordinate.
-   * @param y    Character's Y start coordinate
+   * @param game            Reference to the **Phaser.Game**
+   * @param shadowsGroup    Group where to stack the character's shadow.
+   * @param charactersGroup Group where to stack the character.
+   * @param x               Character's X start coordinate.
+   * @param y               Character's Y start coordinate
    *
    * @author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
    */
-  constructor(game: Phaser.Game, x: number = 0.0, y: number = 0.0) {
+  constructor(game: Phaser.Game, shadowsGroup: Phaser.Group, charactersGroup: Phaser.Group, x: number = 0.0, y: number = 0.0) {
     this._game = game;
-    this._body = this._game.add.sprite(x, y, "sprite-character-body");
+    this._shadowsGroup = shadowsGroup;
+    this._charactersGroup = charactersGroup;
+    this._shadow = this._game.make.sprite(x, y, "sprite-shadow");
+    this._body = this._game.make.sprite(x, y, "sprite-character-body");
 
     this.create(x, y);
   }
@@ -197,10 +217,24 @@ export default class Character {
   }
 
   /**
+   * Method to call in game's update cycle.
+   *
+   * **Created:** *01 10th 2019, 15:20*<br />
+   * **Updated:** *01 10th 2019, 15:20*
+   *
+   * @author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
+   */
+  public update(): void {
+    // Update character's shadow position:
+    this._shadow.x = this._body.x;
+    this._shadow.y = this._body.y;
+  }
+
+  /**
    * Creates all the sprites related to the character according to clothing, animation and stuff.
    *
    * **Created:** *01 05th 2019, 00:13*<br />
-   * **Updated:** *01 05th 2019, 00:13*
+   * **Updated:** *01 10th 2019, 15:22*
    *
    * @param x Character's X start coordinate.
    * @param y Character's Y start coordinate
@@ -210,10 +244,13 @@ export default class Character {
   private create(x: number = 0.0, y: number = 0.0): void {
     let gameData: any = this.game.cache.getJSON("data-game");
 
-    // Create body animations:
+    // Create animations, shadow, and add body to group:
 
+    this._shadow.anchor.set(0.5, 0.5);
     this._body.anchor.set(0.5, 0.5);
     this.addAnimation(gameData, this._body);
+    this._shadowsGroup.add(this._shadow);
+    this._charactersGroup.add(this._body);
 
     let characterSprite: CharacterSpriteI = {
       sprite: this._body,

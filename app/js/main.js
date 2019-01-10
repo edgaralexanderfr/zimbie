@@ -63,13 +63,16 @@ define("Character", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Character = (function () {
-        function Character(game, x, y) {
+        function Character(game, shadowsGroup, charactersGroup, x, y) {
             if (x === void 0) { x = 0.0; }
             if (y === void 0) { y = 0.0; }
             this._sprites = {};
             this._lastAnimationPlayed = "";
             this._game = game;
-            this._body = this._game.add.sprite(x, y, "sprite-character-body");
+            this._shadowsGroup = shadowsGroup;
+            this._charactersGroup = charactersGroup;
+            this._shadow = this._game.make.sprite(x, y, "sprite-shadow");
+            this._body = this._game.make.sprite(x, y, "sprite-character-body");
             this.create(x, y);
         }
         Object.defineProperty(Character.prototype, "game", {
@@ -78,6 +81,27 @@ define("Character", ["require", "exports"], function (require, exports) {
             },
             set: function (game) {
                 this._game = game;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Character.prototype, "shadowsGroup", {
+            get: function () {
+                return this._shadowsGroup;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Character.prototype, "charactersGroup", {
+            get: function () {
+                return this._charactersGroup;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Character.prototype, "shadow", {
+            get: function () {
+                return this._shadow;
             },
             enumerable: true,
             configurable: true
@@ -146,12 +170,19 @@ define("Character", ["require", "exports"], function (require, exports) {
                 }
             }
         };
+        Character.prototype.update = function () {
+            this._shadow.x = this._body.x;
+            this._shadow.y = this._body.y;
+        };
         Character.prototype.create = function (x, y) {
             if (x === void 0) { x = 0.0; }
             if (y === void 0) { y = 0.0; }
             var gameData = this.game.cache.getJSON("data-game");
+            this._shadow.anchor.set(0.5, 0.5);
             this._body.anchor.set(0.5, 0.5);
             this.addAnimation(gameData, this._body);
+            this._shadowsGroup.add(this._shadow);
+            this._charactersGroup.add(this._body);
             var characterSprite = {
                 sprite: this._body,
                 color: 0xffffff
@@ -323,7 +354,7 @@ define("Terrain", ["require", "exports"], function (require, exports) {
             }
             this.game.world.setBounds(0, 0, texWidth, texHeight);
             this.game.cache.addBitmapData("terrain", data);
-            this.game.add.sprite(0, 0, this.game.cache.getBitmapData("terrain"));
+            this.game.add.tileSprite(0, 0, texWidth, texHeight, this.game.cache.getBitmapData("terrain"));
         };
         Terrain.prototype.getNeighbors = function (gridData, j, i, defaultValue) {
             if (defaultValue === void 0) { defaultValue = ""; }
@@ -371,13 +402,13 @@ define("main", ["require", "exports", "AssetManager", "Terrain", "Character"], f
     var threeKey;
     var fourKey;
     var fiveKey;
+    var shadowsGroup;
+    var charactersGroup;
     var character;
     function preload() {
         AssetManager_1.default.loadMap(game);
     }
     function create() {
-        game.load.onLoadComplete.add(init);
-        AssetManager_1.default.load(game);
         upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -388,11 +419,15 @@ define("main", ["require", "exports", "AssetManager", "Terrain", "Character"], f
         threeKey = game.input.keyboard.addKey(Phaser.Keyboard.THREE);
         fourKey = game.input.keyboard.addKey(Phaser.Keyboard.FOUR);
         fiveKey = game.input.keyboard.addKey(Phaser.Keyboard.FIVE);
+        game.load.onLoadComplete.add(init);
+        AssetManager_1.default.load(game);
     }
     function init() {
         var terrain = new Terrain_1.default(game);
         terrain.generate();
-        character = new Character_1.default(game, 32, 32);
+        shadowsGroup = game.add.group();
+        charactersGroup = game.add.group();
+        character = new Character_1.default(game, shadowsGroup, charactersGroup, 2048, 2048);
         character.setClothing("hair", 1);
         character.setClothing("jacket", 1);
         character.setClothing("shirt", 1);
@@ -435,41 +470,42 @@ define("main", ["require", "exports", "AssetManager", "Terrain", "Character"], f
         }
         if (upKey.isDown && leftKey.isDown) {
             character.playAnimation("walkUpLeft");
-            return;
         }
-        if (upKey.isDown && rightKey.isDown) {
+        else if (upKey.isDown && rightKey.isDown) {
             character.playAnimation("walkUpRight");
-            return;
         }
-        if (downKey.isDown && leftKey.isDown) {
+        else if (downKey.isDown && leftKey.isDown) {
             character.playAnimation("walkDownLeft");
-            return;
         }
-        if (downKey.isDown && rightKey.isDown) {
+        else if (downKey.isDown && rightKey.isDown) {
             character.playAnimation("walkDownRight");
-            return;
         }
-        if (upKey.isDown) {
+        else if (upKey.isDown) {
             character.playAnimation("walkUp");
-            return;
         }
-        if (downKey.isDown) {
+        else if (downKey.isDown) {
             character.playAnimation("walkDown");
-            return;
         }
-        if (leftKey.isDown) {
+        else if (leftKey.isDown) {
             character.playAnimation("walkLeft");
-            return;
         }
-        if (rightKey.isDown) {
+        else if (rightKey.isDown) {
             character.playAnimation("walkRight");
-            return;
+        }
+        if (character) {
+            character.update();
+        }
+        if (shadowsGroup) {
+            shadowsGroup.sort('y', Phaser.Group.SORT_ASCENDING);
+        }
+        if (charactersGroup) {
+            charactersGroup.sort('y', Phaser.Group.SORT_ASCENDING);
         }
     }
     function resizeGame(e) {
         game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
     }
-    window.addEventListener('resize', resizeGame, false);
+    window.addEventListener("resize", resizeGame, false);
 });
 define("util/damage", ["require", "exports"], function (require, exports) {
     "use strict";

@@ -24,6 +24,8 @@ let threeKey: Phaser.Key;
 let fourKey: Phaser.Key;
 let fiveKey: Phaser.Key;
 
+let shadowsGroup: Phaser.Group;
+let charactersGroup: Phaser.Group;
 let character: Character;
 
 function preload(): void {
@@ -31,9 +33,6 @@ function preload(): void {
 }
 
 function create(): void {
-  game.load.onLoadComplete.add(init);
-  AssetManager.load(game);
-
   upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
   downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
   leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -44,13 +43,19 @@ function create(): void {
   threeKey = game.input.keyboard.addKey(Phaser.Keyboard.THREE);
   fourKey = game.input.keyboard.addKey(Phaser.Keyboard.FOUR);
   fiveKey = game.input.keyboard.addKey(Phaser.Keyboard.FIVE);
+
+  game.load.onLoadComplete.add(init);
+  AssetManager.load(game);
 }
 
 function init(): void {
   let terrain: Terrain = new Terrain(game);
   terrain.generate();
 
-  character = new Character(game, 32, 32);
+  shadowsGroup = game.add.group();
+  charactersGroup = game.add.group();
+
+  character = new Character(game, shadowsGroup, charactersGroup, 2048, 2048);
   character.setClothing("hair", 1);
   character.setClothing("jacket", 1);
   character.setClothing("shirt", 1);
@@ -106,50 +111,39 @@ function update(): void {
 
   if (upKey.isDown && leftKey.isDown) {
     character.playAnimation("walkUpLeft");
-
-    return;
-  }
-
+  } else
   if (upKey.isDown && rightKey.isDown) {
     character.playAnimation("walkUpRight");
-
-    return;
-  }
-
+  } else
   if (downKey.isDown && leftKey.isDown) {
     character.playAnimation("walkDownLeft");
-
-    return;
-  }
-
+  } else
   if (downKey.isDown && rightKey.isDown) {
     character.playAnimation("walkDownRight");
-
-    return;
-  }
-
+  } else
   if (upKey.isDown) {
     character.playAnimation("walkUp");
-
-    return;
-  }
-
+  } else
   if (downKey.isDown) {
     character.playAnimation("walkDown");
-
-    return;
-  }
-
+  } else
   if (leftKey.isDown) {
     character.playAnimation("walkLeft");
-
-    return;
-  }
-
+  } else
   if (rightKey.isDown) {
     character.playAnimation("walkRight");
+  }
 
-    return;
+  if (character) {
+    character.update();
+  }
+
+  if (shadowsGroup) {
+    shadowsGroup.sort('y', Phaser.Group.SORT_ASCENDING);
+  }
+
+  if (charactersGroup) {
+    charactersGroup.sort('y', Phaser.Group.SORT_ASCENDING);
   }
 }
 
@@ -157,4 +151,4 @@ function resizeGame(e: Event): void {
   game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
 }
 
-window.addEventListener('resize', resizeGame, false);
+window.addEventListener("resize", resizeGame, false);
