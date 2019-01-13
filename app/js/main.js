@@ -17,7 +17,7 @@ define("AssetManager", ["require", "exports"], function (require, exports) {
             var i;
             for (i = 0; i < single.length; i++) {
                 var asset = single[i];
-                this.loadFile(game, asset.type, asset.name, asset.uri);
+                this.loadFile(assets, game, asset.type, asset.name, asset.uri, asset);
             }
             for (i = 0; i < multiple.length; i++) {
                 var asset = multiple[i];
@@ -25,12 +25,12 @@ define("AssetManager", ["require", "exports"], function (require, exports) {
                 for (count = 1; count <= asset.total; count++) {
                     var name_1 = asset.name + count;
                     var uri = asset.uri + count + asset.extension;
-                    this.loadFile(game, asset.type, name_1, uri);
+                    this.loadFile(assets, game, asset.type, name_1, uri, asset);
                 }
             }
             game.load.start();
         };
-        AssetManager.loadFile = function (game, type, name, uri) {
+        AssetManager.loadFile = function (assets, game, type, name, uri, asset) {
             switch (type) {
                 case "image":
                     game.load.image(name, uri);
@@ -38,11 +38,217 @@ define("AssetManager", ["require", "exports"], function (require, exports) {
                 case "json":
                     game.load.json(name, uri);
                     break;
+                case "spritesheet":
+                    var spriteWidth = assets.spritesheets.spriteWidth;
+                    var spriteHeight = assets.spritesheets.spriteHeight;
+                    var spriteMax = undefined;
+                    if (asset["spriteWidth"]) {
+                        spriteWidth = asset["spriteWidth"];
+                    }
+                    if (asset["spriteHeight"]) {
+                        spriteWidth = asset["spriteHeight"];
+                    }
+                    if (asset["spriteMax"]) {
+                        spriteMax = asset["spriteMax"];
+                    }
+                    game.load.spritesheet(name, uri, spriteWidth, spriteHeight, spriteMax);
+                    break;
             }
         };
         return AssetManager;
     }());
     exports.default = AssetManager;
+});
+define("Character", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Character = (function () {
+        function Character(game, shadowsGroup, charactersGroup, x, y) {
+            if (x === void 0) { x = 0.0; }
+            if (y === void 0) { y = 0.0; }
+            this._sprites = {};
+            this._lastAnimationPlayed = "";
+            this._game = game;
+            this._shadowsGroup = shadowsGroup;
+            this._charactersGroup = charactersGroup;
+            this._shadow = this._game.make.sprite(x, y, "sprite-shadow");
+            this._body = this._game.make.sprite(x, y, "sprite-character-body");
+            this.create(x, y);
+        }
+        Object.defineProperty(Character.prototype, "game", {
+            get: function () {
+                return this._game;
+            },
+            set: function (game) {
+                this._game = game;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Character.prototype, "shadowsGroup", {
+            get: function () {
+                return this._shadowsGroup;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Character.prototype, "charactersGroup", {
+            get: function () {
+                return this._charactersGroup;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Character.prototype, "shadow", {
+            get: function () {
+                return this._shadow;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Character.prototype, "body", {
+            get: function () {
+                return this._body;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Character.prototype.setClothing = function (name, index) {
+            var spriteArray = this._sprites[name];
+            var selectedCharacterSprite = spriteArray.spriteArray[spriteArray.selectedSprite];
+            var characterSpriteToSelect = spriteArray.spriteArray[index];
+            spriteArray.selectedSprite = index;
+            if (selectedCharacterSprite && selectedCharacterSprite.sprite) {
+                selectedCharacterSprite.sprite.visible = false;
+            }
+            if (characterSpriteToSelect && characterSpriteToSelect.sprite) {
+                characterSpriteToSelect.sprite.tint = characterSpriteToSelect.color;
+                characterSpriteToSelect.sprite.visible = true;
+            }
+            var lastAnimationPlayed = this._lastAnimationPlayed;
+            this._lastAnimationPlayed = "";
+            this.playAnimation(lastAnimationPlayed);
+        };
+        Character.prototype.previousClothing = function (name) {
+            var spriteArray = this._sprites[name];
+            var nextIndex = spriteArray.selectedSprite - 1;
+            if (nextIndex < 0) {
+                nextIndex = spriteArray.spriteArray.length - 1;
+            }
+            this.setClothing(name, nextIndex);
+        };
+        Character.prototype.nextClothing = function (name) {
+            var spriteArray = this._sprites[name];
+            var nextIndex = spriteArray.selectedSprite + 1;
+            if (nextIndex >= spriteArray.spriteArray.length) {
+                nextIndex = 0;
+            }
+            this.setClothing(name, nextIndex);
+        };
+        Character.prototype.setClothingColor = function (name, color) {
+            if (color === void 0) { color = 0xffffff; }
+            var spriteArray = this._sprites[name];
+            var selectedCharacterSprite = spriteArray.spriteArray[spriteArray.selectedSprite];
+            if (selectedCharacterSprite) {
+                selectedCharacterSprite.color = color;
+                if (selectedCharacterSprite.sprite) {
+                    selectedCharacterSprite.sprite.tint = color;
+                }
+            }
+        };
+        Character.prototype.playAnimation = function (animationName) {
+            if (animationName == this._lastAnimationPlayed) {
+                return;
+            }
+            this._lastAnimationPlayed = animationName;
+            for (var name_2 in this._sprites) {
+                var spriteArray = this._sprites[name_2];
+                var characterSprite = spriteArray.spriteArray[spriteArray.selectedSprite];
+                if (characterSprite && characterSprite.sprite) {
+                    characterSprite.sprite.animations.stop();
+                    characterSprite.sprite.animations.play(animationName);
+                }
+            }
+        };
+        Character.prototype.update = function () {
+            this._shadow.x = this._body.x;
+            this._shadow.y = this._body.y;
+        };
+        Character.prototype.create = function (x, y) {
+            if (x === void 0) { x = 0.0; }
+            if (y === void 0) { y = 0.0; }
+            var gameData = this.game.cache.getJSON("data-game");
+            this._shadow.anchor.set(0.5, 0.5);
+            this._body.anchor.set(0.5, 0.5);
+            this.addAnimation(gameData, this._body);
+            this._shadowsGroup.add(this._shadow);
+            this._charactersGroup.add(this._body);
+            var characterSprite = {
+                sprite: this._body,
+                color: 0xffffff
+            };
+            var characterSpriteArray = {
+                spriteArray: [characterSprite],
+                selectedSprite: 0
+            };
+            this._sprites["body"] = characterSpriteArray;
+            for (var _i = 0, _a = gameData.character.clothing; _i < _a.length; _i++) {
+                var clothing = _a[_i];
+                if (clothing["single"]) {
+                    var sprite = this._game.make.sprite(0, 0, "sprite-character-" + clothing.name);
+                    sprite.anchor.set(0.5, 0.5);
+                    this.addAnimation(gameData, sprite);
+                    this._body.addChild(sprite);
+                    var characterSprite_1 = {
+                        sprite: sprite,
+                        color: 0xffffff
+                    };
+                    var characterSpriteArray_1 = {
+                        spriteArray: [characterSprite_1],
+                        selectedSprite: 0
+                    };
+                    this._sprites[clothing.name] = characterSpriteArray_1;
+                }
+                else {
+                    var spriteArray = [null];
+                    for (var c = 1; c <= clothing.total; c++) {
+                        var sprite = this._game.make.sprite(0, 0, "sprite-character-" + clothing.name + c);
+                        sprite.anchor.set(0.5, 0.5);
+                        sprite.visible = false;
+                        this.addAnimation(gameData, sprite);
+                        this._body.addChild(sprite);
+                        var characterSprite_2 = {
+                            sprite: sprite,
+                            color: 0xffffff
+                        };
+                        spriteArray.push(characterSprite_2);
+                    }
+                    var characterSpriteArray_2 = {
+                        spriteArray: spriteArray,
+                        selectedSprite: 0
+                    };
+                    this._sprites[clothing.name] = characterSpriteArray_2;
+                }
+            }
+        };
+        Character.prototype.addAnimation = function (gameData, sprite) {
+            var spriteIndex = 0;
+            for (var _i = 0, _a = gameData.character.sprites.animations; _i < _a.length; _i++) {
+                var animation = _a[_i];
+                for (var _b = 0, _c = gameData.character.sprites.directions; _b < _c.length; _b++) {
+                    var direction = _c[_b];
+                    var frames_1 = [];
+                    for (var frameIndex = 0; frameIndex < gameData.character.sprites.totalFrames; frameIndex++) {
+                        frames_1.push(spriteIndex);
+                        spriteIndex++;
+                    }
+                    sprite.animations.add(animation.name + direction, frames_1, animation.frameRate, animation.loop);
+                }
+            }
+        };
+        return Character;
+    }());
+    exports.default = Character;
 });
 define("Terrain", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -148,7 +354,7 @@ define("Terrain", ["require", "exports"], function (require, exports) {
             }
             this.game.world.setBounds(0, 0, texWidth, texHeight);
             this.game.cache.addBitmapData("terrain", data);
-            this.game.add.sprite(0, 0, this.game.cache.getBitmapData("terrain"));
+            this.game.add.tileSprite(0, 0, texWidth, texHeight, this.game.cache.getBitmapData("terrain"));
         };
         Terrain.prototype.getNeighbors = function (gridData, j, i, defaultValue) {
             if (defaultValue === void 0) { defaultValue = ""; }
@@ -174,15 +380,14 @@ define("Terrain", ["require", "exports"], function (require, exports) {
     }());
     exports.default = Terrain;
 });
-define("main", ["require", "exports", "AssetManager", "Terrain"], function (require, exports, AssetManager_1, Terrain_1) {
+define("main", ["require", "exports", "AssetManager", "Terrain", "Character"], function (require, exports, AssetManager_1, Terrain_1, Character_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     AssetManager_1 = __importDefault(AssetManager_1);
     Terrain_1 = __importDefault(Terrain_1);
-    var GAME_WIDTH = 1350;
-    var GAME_HEIGHT = 650;
-    var CAMERA_SPEED = 8;
-    var game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.AUTO, "", {
+    Character_1 = __importDefault(Character_1);
+    var CAMERA_SPEED = 4;
+    var game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO, "", {
         preload: preload,
         create: create,
         update: update
@@ -191,36 +396,116 @@ define("main", ["require", "exports", "AssetManager", "Terrain"], function (requ
     var downKey;
     var leftKey;
     var rightKey;
+    var zeroKey;
+    var oneKey;
+    var twoKey;
+    var threeKey;
+    var fourKey;
+    var fiveKey;
+    var shadowsGroup;
+    var charactersGroup;
+    var character;
     function preload() {
-        document.body.style.backgroundColor = "black";
         AssetManager_1.default.loadMap(game);
     }
     function create() {
-        game.load.onLoadComplete.add(init);
-        AssetManager_1.default.load(game);
         upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
         downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
         leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
         rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        zeroKey = game.input.keyboard.addKey(Phaser.Keyboard.ZERO);
+        oneKey = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
+        twoKey = game.input.keyboard.addKey(Phaser.Keyboard.TWO);
+        threeKey = game.input.keyboard.addKey(Phaser.Keyboard.THREE);
+        fourKey = game.input.keyboard.addKey(Phaser.Keyboard.FOUR);
+        fiveKey = game.input.keyboard.addKey(Phaser.Keyboard.FIVE);
+        game.load.onLoadComplete.add(init);
+        AssetManager_1.default.load(game);
     }
     function init() {
         var terrain = new Terrain_1.default(game);
         terrain.generate();
+        shadowsGroup = game.add.group();
+        charactersGroup = game.add.group();
+        character = new Character_1.default(game, shadowsGroup, charactersGroup, 2048, 2048);
+        character.setClothing("hair", 1);
+        character.setClothing("jacket", 1);
+        character.setClothing("shirt", 1);
+        character.setClothing("pants", 1);
+        character.setClothing("shoes", 1);
+        game.camera.follow(character.body, Phaser.Camera.FOLLOW_LOCKON);
     }
     function update() {
         if (upKey.isDown) {
-            game.camera.y -= CAMERA_SPEED;
+            character.body.y -= CAMERA_SPEED;
         }
         if (downKey.isDown) {
-            game.camera.y += CAMERA_SPEED;
+            character.body.y += CAMERA_SPEED;
         }
         if (leftKey.isDown) {
-            game.camera.x -= CAMERA_SPEED;
+            character.body.x -= CAMERA_SPEED;
         }
         if (rightKey.isDown) {
-            game.camera.x += CAMERA_SPEED;
+            character.body.x += CAMERA_SPEED;
+        }
+        if (zeroKey.isDown) {
+            var clothingName = prompt("Clothing name:");
+            var clothingColor = prompt("Clothing colour:");
+            character.setClothingColor(clothingName, +clothingColor);
+        }
+        if (oneKey.isDown) {
+            character.nextClothing("hair");
+        }
+        if (twoKey.isDown) {
+            character.nextClothing("jacket");
+        }
+        if (threeKey.isDown) {
+            character.nextClothing("shirt");
+        }
+        if (fourKey.isDown) {
+            character.nextClothing("pants");
+        }
+        if (fiveKey.isDown) {
+            character.nextClothing("shoes");
+        }
+        if (upKey.isDown && leftKey.isDown) {
+            character.playAnimation("walkUpLeft");
+        }
+        else if (upKey.isDown && rightKey.isDown) {
+            character.playAnimation("walkUpRight");
+        }
+        else if (downKey.isDown && leftKey.isDown) {
+            character.playAnimation("walkDownLeft");
+        }
+        else if (downKey.isDown && rightKey.isDown) {
+            character.playAnimation("walkDownRight");
+        }
+        else if (upKey.isDown) {
+            character.playAnimation("walkUp");
+        }
+        else if (downKey.isDown) {
+            character.playAnimation("walkDown");
+        }
+        else if (leftKey.isDown) {
+            character.playAnimation("walkLeft");
+        }
+        else if (rightKey.isDown) {
+            character.playAnimation("walkRight");
+        }
+        if (character) {
+            character.update();
+        }
+        if (shadowsGroup) {
+            shadowsGroup.sort('y', Phaser.Group.SORT_ASCENDING);
+        }
+        if (charactersGroup) {
+            charactersGroup.sort('y', Phaser.Group.SORT_ASCENDING);
         }
     }
+    function resizeGame(e) {
+        game.scale.setGameSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+    }
+    window.addEventListener("resize", resizeGame, false);
 });
 define("util/damage", ["require", "exports"], function (require, exports) {
     "use strict";

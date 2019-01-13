@@ -1,8 +1,9 @@
 # Author: Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
 # Created: 08 20th 2018, 22:18
-# Updated: 01 03d 2019, 17:44
+# Updated: 01 05th 2019, 18:05
 # NOTE: In order to run this script you must install the Python's **Pillow** library via PIP, for
-#       more information please read the *README.md* file of the project.
+#       more information please read the *README.md* file of the project. Make sure gulp's task
+#       **browser-sync** is not running before you execute this script.
 
 import os
 import math

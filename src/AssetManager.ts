@@ -8,7 +8,7 @@
  * listed within the *assets/assets.json* file.
  *
  * **Created:** *10 28th 2018, 00:40*<br />
- * **Updated:** *10 28th 2018, 10:12*
+ * **Updated:** *01 04th 2019, 23:09*
  *
  * @author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
  */
@@ -33,7 +33,7 @@ export default class AssetManager {
    * file and must be called during the *create* state.
    *
    * **Created:** *10 28th 2018, 00:56*<br />
-   * **Updated:** *10 28th 2018, 10:12*
+   * **Updated:** *01 04th 2019, 23:36*
    *
    * @param game Instance of the game where to load the assets.
    *
@@ -48,7 +48,7 @@ export default class AssetManager {
     for (i = 0; i < single.length; i++) {
       let asset: any = single[ i ];
 
-      this.loadFile(game, asset.type, asset.name, asset.uri);
+      this.loadFile(assets, game, asset.type, asset.name, asset.uri, asset);
     }
 
     for (i = 0; i < multiple.length; i++) {
@@ -59,7 +59,7 @@ export default class AssetManager {
         let name: string = asset.name + count;
         let uri: string = asset.uri + count + asset.extension;
 
-        this.loadFile(game, asset.type, name, uri);
+        this.loadFile(assets, game, asset.type, name, uri, asset);
       }
     }
 
@@ -71,22 +71,44 @@ export default class AssetManager {
    * game instance.
    *
    * **Created:** *10 28th 2018, 10:16*<br />
-   * **Updated:** *10 28th 2018, 10:16*
+   * **Updated:** *01 04th 2019, 23:10*
    *
-   * @param type Type of the file to load (ex: `"image" | "json"`).
-   * @param name Name of the file to assign within the game context.
-   * @param uri  URI of the file to load.
+   * @param assets Object containing the info from *assets/assets.json* configuration file.
+   * @param type   Type of the file to load (ex: `"image" | "json"`).
+   * @param name   Name of the file to assign within the game context.
+   * @param uri    URI of the file to load.
+   * @param asset  Object containing the asset info.
    *
    * @author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
    */
-  private static loadFile(game: Phaser.Game, type: string, name: string, uri: string)
+  private static loadFile(assets: any, game: Phaser.Game, type: string, name: string, uri: string, asset: any)
   {
+    // FIXME: We can avoid the use of **name** and **uri** params by just using the **asset** parameter...
     switch (type) {
       case "image":
         game.load.image(name, uri);
         break;
       case "json":
         game.load.json(name, uri);
+        break;
+      case "spritesheet":
+        let spriteWidth: number = assets.spritesheets.spriteWidth;
+        let spriteHeight: number = assets.spritesheets.spriteHeight;
+        let spriteMax: number | undefined = undefined;
+
+        if (asset["spriteWidth"]) {
+          spriteWidth = asset["spriteWidth"];
+        }
+
+        if (asset["spriteHeight"]) {
+          spriteWidth = asset["spriteHeight"];
+        }
+
+        if (asset["spriteMax"]) {
+          spriteMax = asset["spriteMax"];
+        }
+
+        game.load.spritesheet(name, uri, spriteWidth, spriteHeight, spriteMax);
         break;
     }
   }

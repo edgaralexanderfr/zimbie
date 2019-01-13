@@ -3,6 +3,7 @@ var typescript = require('gulp-typescript');
 var uglify = require('gulp-uglify');
 var typedoc = require('gulp-typedoc');
 var browserSync = require('browser-sync').create();
+var cleanCSS = require('gulp-clean-css');
 var { gitDescribe } = require('git-describe');
 
 var tsProject = typescript.createProject('tsconfig.json');
@@ -31,6 +32,12 @@ gulp.task('uglify', function() {
   return gulp.src('app/js/main.js')
     .pipe(uglify())
     .pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('minify-css', function () {
+  return gulp.src('app/css/index.css')
+    .pipe(cleanCSS())
+    .pipe(gulp.dest('dist/css'));
 });
 
 gulp.task('copy', function(done) {
@@ -68,7 +75,7 @@ gulp.task('browser-sync', function (done) {
     }
   });
 
-  gulp.watch('./src/**/*', gulp.series('typescript', 'uglify', 'copy', function (done) {
+  gulp.watch('./src/**/*', gulp.series('typescript', 'uglify', 'minify-css', 'copy', function (done) {
     done();
   }));
 
@@ -88,6 +95,6 @@ gulp.task('browser-sync-reload', function (done) {
   done();
 });
 
-gulp.task('default', gulp.series('typescript', 'uglify', 'copy', function (done) {
+gulp.task('default', gulp.series('typescript', 'uglify', 'minify-css', 'copy', function (done) {
   done();
 }));

@@ -27,7 +27,7 @@ export default class Terrain {
    * *assets/data/game.json* configuration file.
    *
    * **Created:** *10 28th 2018, 11:56*<br />
-   * **Updated:** *11 24th 2018, 17:41*
+   * **Updated:** *01 10th 2019, 15:41*
    *
    * @author Edgar Alexander Franco <edgaralexanderfr@gmail.com> (http://www.edgaralexanderfr.com.ve)
    */
@@ -146,8 +146,7 @@ export default class Terrain {
     // final "background" object that will hold the terrain texture:
     this.game.world.setBounds(0, 0, texWidth, texHeight);
     this.game.cache.addBitmapData("terrain", data);
-    // FIXME: Check a proper way of doing this:
-    this.game.add.sprite(0, 0, this.game.cache.getBitmapData("terrain"));
+    this.game.add.tileSprite(0, 0, texWidth, texHeight, this.game.cache.getBitmapData("terrain"));
   }
 
   /**

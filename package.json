@@ -13,6 +13,7 @@
     "browser-sync": "^2.26.3",
     "git-describe": "^4.0.3",
     "gulp": "^4.0.0",
+    "gulp-clean-css": "^4.0.0",
     "gulp-typedoc": "^2.2.0",
     "gulp-typescript": "^5.0.0-alpha.3",
     "gulp-uglify": "^3.0.1",
